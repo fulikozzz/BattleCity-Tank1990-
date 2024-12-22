@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+/.vs/Tanks
+/x64
+*.sln
+*.user
+*.filters
+*.vcxproj
