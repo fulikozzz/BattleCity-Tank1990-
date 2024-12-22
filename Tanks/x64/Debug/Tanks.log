@@ -1,0 +1,5 @@
+﻿  Tanks.cpp
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(24,13): warning C4244: инициализация: преобразование "sf::Int32" в "float", возможна потеря данных
+  Tanks.vcxproj -> D:\VS projects\Programming labs\SEM-3\Tanks\x64\Debug\Tanks.exe
+  "pwsh.exe" не является внутренней или внешней
+  командой, исполняемой программой или пакетным файлом.
