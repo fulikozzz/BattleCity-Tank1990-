@@ -2,6 +2,7 @@
 #include "Map.h"
 
 #include "Player_Tank.h"
+#include "Bullet.h"
 
 using namespace sf;
 
@@ -76,6 +77,8 @@ int main()
 	// Инициализация игрока
 	Player_Tank ptank(Position(54,54),UP,3,0,1);
 
+	Bullet bullet(Position(0, 0), RIGHT, 0.3);
+
 	// Часы для привязки ко времени
 	Clock clock;
 
@@ -98,7 +101,9 @@ int main()
 		ptank.control(time);
 		checkCollisionTank(ptank, map);
 		// Отрисовываем игрока
+		bullet.move(time);
 		window.draw(ptank.getSprite());
+		window.draw(bullet.getSprite());
 		window.display();
 	}
 	return 0;

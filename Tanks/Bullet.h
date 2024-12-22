@@ -5,12 +5,11 @@
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
-class Tank
+class Bullet
 {
 private:
 	Position position;
 	Direction direction;
-	int lives;
 	float speed;
 
 	// Для отрисовки
@@ -19,17 +18,15 @@ private:
 	Image image;
 	Texture texture;
 	Sprite sprite;
-
+	
 public:
-	Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed);
+	Bullet(Position initPosition, Direction initDirection, float initSpeed);
 
 	Position getPosition();
 	Direction getDirection();
-	int getLives();
 	float getSpeed();
 	void setPosition(Position newPosition);
 	void setDirection(Direction newDirection);
-	void setLives(int value);
 	void setSpeed(float value);
 
 	void move(float time);
@@ -37,6 +34,6 @@ public:
 	bool checkBoarderCollision(int currentX, int currentY, Direction currentDirection, float speed, float time);
 
 
-	Sprite getSprite() { return sprite; }
+	Sprite getSprite();
 };
 
