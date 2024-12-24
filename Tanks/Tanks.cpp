@@ -2,11 +2,12 @@
 #include "Map.h"
 
 #include "Player_Tank.h"
+#include "Enemy.h"
 #include "Bullet.h"
 
 using namespace sf;
 
-static void checkCollisionTank(Tank& tank, Map& map) {
+static bool checkCollisionTank(Tank& tank, Map& map) {
 	/*for (int y = (tank.getPosition().getY() + 5) / 54; y < (tank.getPosition().getY() + 49) / 54; y++) {
 		for (int x = (tank.getPosition().getX() + 5) / 54; x < (tank.getPosition().getX() + 49) / 54; x++) {
 			Wall rect = map.getCell(y, x);
@@ -59,13 +60,15 @@ static void checkCollisionTank(Tank& tank, Map& map) {
 				else if (tank.getDirection() == RIGHT) {
 					tank.setPosition(Position(walls.left - tank_obj.width, tank.getPosition().getY()));
 				}
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
-void checkCollisionBullet(Bullet& bullet, Map& map) {
-	if (!bullet.getIsActive()) return;
+static bool checkCollisionBullet(Bullet& bullet, Map& map) {
+	if (!bullet.getIsActive()) return false;
 
 	// Размер клетки карты
 	const int cellSize = 54;
@@ -109,11 +112,50 @@ void checkCollisionBullet(Bullet& bullet, Map& map) {
 				default:
 					break;
 				}
-				return;
+				return true;
 			}
 		}
 	}
+	return false;
 }
+
+static bool checkCollision_BulletsWithEnemies(Bullet& player_bullet, vector<Enemy>& enemies){
+	// Размер клетки карты
+	const int cellSize = 54;
+	const int bulletSize = 18;
+
+	int bulletTopLeftX = player_bullet.getPosition().getX() / cellSize;
+	int bulletTopLeftY = player_bullet.getPosition().getY() / cellSize;
+	int bulletBottomRightX = (player_bullet.getPosition().getX() + bulletSize - 1) / cellSize;
+	int bulletBottomRightY = (player_bullet.getPosition().getY() + bulletSize - 1) / cellSize;
+
+	FloatRect bullet_obj(player_bullet.getPosition().getX(), player_bullet.getPosition().getY(), bulletSize, bulletSize);
+
+	int count = 0;
+	for (vector<Enemy>::iterator enemy = enemies.begin(); enemy != enemies.end(); ++enemy) {
+		int tankTopLeftX = enemy->getPosition().getX() / cellSize;
+		int tankTopLeftY = enemy->getPosition().getY() / cellSize;
+		int tankBottomRightX = (enemy->getPosition().getX() + cellSize - 1) / cellSize;
+		int tankBottomRightY = (enemy->getPosition().getY() + cellSize - 1) / cellSize;
+
+		FloatRect tank_obj(enemy->getPosition().getX(), enemy->getPosition().getY(), 49, 49);
+
+		for (int y = tankTopLeftY; y <= tankBottomRightY; ++y) {
+			for (int x = tankTopLeftX; x <= tankBottomRightX; ++x) {
+				if (bullet_obj.intersects(tank_obj)) {
+					//enemies.erase(enemies.begin() + count);
+					enemies.clear();
+					//enemies.erase(enemy);
+					player_bullet.setIsActive(false);
+					return true;
+				}
+			}
+		}
+		count++;
+	}
+	return false;
+}
+
 
 
 int main()
@@ -127,6 +169,28 @@ int main()
 	window.setVerticalSyncEnabled(true);
 	// Инициализация игрока
 	Player_Tank ptank(Position(54,54),UP,3,0,1);
+	// Инициализация противников
+	vector<Enemy> enemies;
+	vector<Enemy>::iterator it;
+
+	enemies.push_back(Enemy(Position(108, 108), UP, 3, 0, 1));
+	enemies.push_back(Enemy(Position(972, 108), UP, 3, 0, 1));
+	Image img; img.loadFromFile("textures/enemy_tank_sprite.png");
+	img.createMaskFromColor(Color::Black);
+	Texture text; text.loadFromImage(img);
+	enemies[0].getSprite().setTexture(text);
+	enemies[0].getSprite().setTexture(text);
+	for (auto& enemy : enemies) {
+		enemy.getBullets().resize(AMOUNT_OF_BULLETS);
+		for (int i = 0; i < AMOUNT_OF_BULLETS; i++) {
+			enemy.getBullets()[i] = Bullet(Position(0, 0), UP, 0.2);
+			//Для отрисовки снаряда
+			enemy.getBullets()[i].setPath();
+			enemy.getBullets()[i].setTextures();
+			enemy.getBullets()[i].setSprite();
+			enemy.getBullets()[i].getSprite().setPosition(0, 0);
+		}
+	}
 
 	// Часы для привязки ко времени
 	Clock clock;
@@ -151,6 +215,23 @@ int main()
 		
 		// Включаем контроллер
 		ptank.control(time);
+
+		for (it = enemies.begin(); it != enemies.end(); it++) {
+			if (checkCollisionTank((*it), map)) {
+				//(*it)->setDirection(static_cast<Direction>(rand() % 4));
+				(it)->startRandomMovement();
+			}
+			(it)->enemy_control(time);
+			for (auto& bullet : (it)->getBullets()) {
+				checkCollisionBullet(bullet, map);
+				if (bullet.getIsActive() && !bullet.checkBoarderCollision(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getDirection(), bullet.getSpeed(), time)) {
+					bullet.move(time);
+					window.draw(bullet.getSprite());
+				}
+			}
+
+			window.draw((it)->getSprite());
+		}
 		
 		// Проверка коллизий
 		checkCollisionTank(ptank, map);
@@ -163,6 +244,7 @@ int main()
 			if (bullet.getIsActive() && !bullet.checkBoarderCollision(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getDirection(), bullet.getSpeed(), time)) {
 				bullet.move(time);
 				window.draw(bullet.getSprite());
+				checkCollision_BulletsWithEnemies(bullet, enemies);
 			}
 		}
 		// Отрисовываем игрока
