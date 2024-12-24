@@ -30,7 +30,7 @@ private:
 	Sprite sprite;
 
 	// Для стрельбы
-	chrono::steady_clock::time_point lastShotTime;  //время последнего выстрела
+	chrono::steady_clock::time_point lastShotTime;  // Время последнего выстрела
 	const chrono::milliseconds shotCooldown = std::chrono::milliseconds(700);  // Задержка между выстрелами
 
 
