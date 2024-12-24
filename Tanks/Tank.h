@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 
 using namespace sf;
 using namespace std;
@@ -27,6 +28,11 @@ private:
 	Image image;
 	Texture texture;
 	Sprite sprite;
+
+	// Для стрельбы
+	chrono::steady_clock::time_point lastShotTime;  //время последнего выстрела
+	const chrono::milliseconds shotCooldown = std::chrono::milliseconds(700);  // Задержка между выстрелами
+
 
 public:
 	Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed);

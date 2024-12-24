@@ -1,5 +1,42 @@
 ﻿  Player_Tank.cpp
 D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Player_Tank.cpp(34,12): warning C4305: аргумент: усечение из "double" в "float"
+  Tank.cpp
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(9,43): warning C4305: аргумент: усечение из "double" в "float"
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(39,59): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(39,42): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(73,44): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(73,34): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+  Tanks.cpp
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(33,19): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(34,19): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(35,23): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(36,23): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,36): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,36): warning C4244:         with
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,36): warning C4244:         [
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,36): warning C4244:             T=float
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,36): warning C4244:         ]
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,22): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,22): warning C4244:         with
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,22): warning C4244:         [
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,22): warning C4244:             T=float
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(47,22): warning C4244:         ]
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(74,21): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(75,21): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(76,25): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(77,25): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,36): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,36): warning C4244:         with
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,36): warning C4244:         [
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,36): warning C4244:             T=float
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,36): warning C4244:         ]
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,22): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,22): warning C4244:         with
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,22): warning C4244:         [
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,22): warning C4244:             T=float
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(88,22): warning C4244:         ]
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tanks.cpp(137,14): warning C4244: инициализация: преобразование "sf::Int64" в "float", возможна потеря данных
+  Создание кода...
   Tanks.vcxproj -> D:\VS projects\Programming labs\SEM-3\Tanks\x64\Debug\Tanks.exe
   "pwsh.exe" не является внутренней или внешней
   командой, исполняемой программой или пакетным файлом.

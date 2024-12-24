@@ -29,7 +29,7 @@ void Player_Tank::control(float time) {
 	if (Keyboard::isKeyPressed(Keyboard::F)) {
 		shoot(time);
 	}
-
+	
 	if (is_Moving) {
 		setSpeed(0.1);
 		switch (getDirection())
