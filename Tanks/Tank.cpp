@@ -4,12 +4,15 @@
 Tank::Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed) :
 	image_path(image_path), position(initPosition), direction(initDirection), lives(initLives), speed(initSpeed), delta(Position(0, 0)) {
 	//Инициализация снаряда
-	bullet = Bullet(Position(0, 0), UP, 0.2);
-	//Для отрисовки снаряда
-	bullet.setPath();
-	bullet.setTextures();
-	bullet.setSprite();
-	bullet.getSprite().setPosition(0, 0);
+	bullets.resize(AMOUNT_OF_BULLETS);
+	for (int i = 0; i < AMOUNT_OF_BULLETS; i++) {
+		bullets[i] = Bullet(Position(0, 0), UP, 0.2);
+		//Для отрисовки снаряда
+		bullets[i].setPath();
+		bullets[i].setTextures();
+		bullets[i].setSprite();
+		bullets[i].getSprite().setPosition(0, 0);
+	}
 	//Для отрисовки игрока
 	image.loadFromFile(image_path);
 	image.createMaskFromColor(Color::White);
@@ -23,7 +26,7 @@ Position Tank::getPosition() { return position; }
 Direction Tank::getDirection() { return direction; }
 int Tank::getLives() { return lives; }
 float Tank::getSpeed() { return speed; }
-Bullet& Tank::getBullets() { return bullet; }
+vector<Bullet>& Tank::getBullets() { return bullets; }
 Sprite Tank::getSprite() { return sprite; }
 void Tank::setPosition(Position newPosition) { position = newPosition; }
 void Tank::setDirection(Direction newDirection) { direction = newDirection; }
@@ -88,12 +91,24 @@ bool Tank::checkBoarderCollision(int currentX, int currentY, Direction currentDi
 }
 
 void Tank::shoot(float time) {
-	bullet.setIsActive(true);
-	bullet.setDirection(this->getDirection());
-	//bullet.setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() +18));
-	if (getDirection() == UP) bullet.setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() - 9));
-	if (getDirection() == LEFT) bullet.setPosition(Position(this->getPosition().getX() - 9, this->getPosition().getY() + 18));
-	if (getDirection() == DOWN)	bullet.setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() + 45));
-	if (getDirection() == RIGHT) bullet.setPosition(Position(this->getPosition().getX() + 45, this->getPosition().getY() + 18));
+	// Найти первый неактивный снаряд
+	auto it = find_if(getBullets().begin(), getBullets().end(), [](Bullet& bullet) {
+		return !bullet.getIsActive(); // Найти неактивный снаряд
+		});
 
+	// Если найден неактивный снаряд
+	if (it != getBullets().end()) {
+		it->setIsActive(true);  // Активировать снаряд
+		it->setDirection(this->getDirection());  // Установить направление
+
+		// Установить позицию снаряда в зависимости от направления
+		if (getDirection() == UP)
+			it->setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() - 9));
+		else if (getDirection() == LEFT)
+			it->setPosition(Position(this->getPosition().getX() - 9, this->getPosition().getY() + 18));
+		else if (getDirection() == DOWN)
+			it->setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() + 45));
+		else if (getDirection() == RIGHT)
+			it->setPosition(Position(this->getPosition().getX() + 45, this->getPosition().getY() + 18));
+	}
 }

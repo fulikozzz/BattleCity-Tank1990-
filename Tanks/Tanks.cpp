@@ -154,12 +154,16 @@ int main()
 		
 		// Проверка коллизий
 		checkCollisionTank(ptank, map);
-		checkCollisionBullet(ptank.getBullets(), map);
+		for (auto& bullet : ptank.getBullets()) {
+			checkCollisionBullet(bullet, map);
+		}
 
 		// Отрисовка снарядов
-		if (ptank.getBullets().getIsActive() && !ptank.getBullets().checkBoarderCollision(ptank.getBullets().getPosition().getX(), ptank.getBullets().getPosition().getY(), ptank.getBullets().getDirection(), ptank.getBullets().getSpeed(), time)) {
-			ptank.getBullets().move(time);
-			window.draw(ptank.getBullets().getSprite());
+		for (auto& bullet : ptank.getBullets()) {
+			if (bullet.getIsActive() && !bullet.checkBoarderCollision(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getDirection(), bullet.getSpeed(), time)) {
+				bullet.move(time);
+				window.draw(bullet.getSprite());
+			}
 		}
 		// Отрисовываем игрока
 		window.draw(ptank.getSprite());
