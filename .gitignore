@@ -37,3 +37,11 @@
 *.user
 *.filters
 *.vcxproj
+/Tanks/x64/Debug/Tanks.ilk
+/Tanks/x64/Debug/Tanks.log
+/Tanks/x64/Debug/Tanks.tlog/CL.read.1.tlog
+/Tanks/x64/Debug/Tanks.tlog/CL.write.1.tlog
+/Tanks/x64/Debug/Tanks.tlog/link.command.1.tlog
+/Tanks/x64/Debug/Tanks.tlog/Tanks.lastbuildstate
+/Tanks/x64/Debug/vc143.idb
+/Tanks/x64/Debug/vc143.pdb
