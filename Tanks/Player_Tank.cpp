@@ -27,11 +27,9 @@ void Player_Tank::control(float time) {
 		is_Moving = true;
 	}
 	if (Keyboard::isKeyPressed(Keyboard::F)) {
-		if (!getBullets().getIsActive()) {
-			shoot(time);
-		}
-
+		shoot(time);
 	}
+
 	if (is_Moving) {
 		setSpeed(0.1);
 		switch (getDirection())

@@ -1,9 +1,5 @@
-﻿  Tank.cpp
-D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(7,38): warning C4305: аргумент: усечение из "double" в "float"
-D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(34,59): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(34,42): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(68,44): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Tank.cpp(68,34): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+﻿  Player_Tank.cpp
+D:\VS projects\Programming labs\SEM-3\Tanks\Tanks\Player_Tank.cpp(34,12): warning C4305: аргумент: усечение из "double" в "float"
   Tanks.vcxproj -> D:\VS projects\Programming labs\SEM-3\Tanks\x64\Debug\Tanks.exe
   "pwsh.exe" не является внутренней или внешней
   командой, исполняемой программой или пакетным файлом.

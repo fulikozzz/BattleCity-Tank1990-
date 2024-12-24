@@ -10,6 +10,8 @@
 using namespace sf;
 using namespace std;
 
+#define AMOUNT_OF_BULLETS 2
+
 class Tank
 {
 private:
@@ -17,7 +19,7 @@ private:
 	Direction direction;
 	int lives;
 	float speed;
-	Bullet bullet;
+	vector<Bullet> bullets;
 
 	// Для отрисовки
 	Position delta;
@@ -33,7 +35,7 @@ public:
 	Direction getDirection();
 	int getLives();
 	float getSpeed();
-	Bullet& getBullets();
+	vector<Bullet>& getBullets();
 	Sprite getSprite();
 	void setPosition(Position newPosition);
 	void setDirection(Direction newDirection);
