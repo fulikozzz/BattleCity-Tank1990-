@@ -1,13 +1,21 @@
 #include "Tank.h"
 #include "Map.h"
-
+#include <iostream>
 Tank::Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed) :
-	image_path(image_path), position(initPosition), direction(initDirection), lives(initLives), speed(initSpeed), delta(Position(0,0)) {	
+	image_path(image_path), position(initPosition), direction(initDirection), lives(initLives), speed(initSpeed), delta(Position(0, 0)) {
+	//Инициализация снаряда
+	bullet = Bullet(Position(0, 0), UP, 0.2);
+	//Для отрисовки снаряда
+	bullet.setPath();
+	bullet.setTextures();
+	bullet.setSprite();
+	bullet.getSprite().setPosition(0, 0);
+	//Для отрисовки игрока
 	image.loadFromFile(image_path);
 	image.createMaskFromColor(Color::White);
 	texture.loadFromImage(image);
 	sprite.setTexture(texture);
-	sprite.setTextureRect(IntRect(0,0,54,54));
+	sprite.setTextureRect(IntRect(0, 0, 54, 54));
 	sprite.setPosition(initPosition.getX(), initPosition.getY());
 }
 
@@ -15,6 +23,8 @@ Position Tank::getPosition() { return position; }
 Direction Tank::getDirection() { return direction; }
 int Tank::getLives() { return lives; }
 float Tank::getSpeed() { return speed; }
+Bullet& Tank::getBullets() { return bullet; }
+Sprite Tank::getSprite() { return sprite; }
 void Tank::setPosition(Position newPosition) { position = newPosition; }
 void Tank::setDirection(Direction newDirection) { direction = newDirection; }
 void Tank::setLives(int value) { lives = value; }
@@ -28,25 +38,21 @@ void Tank::move(float time) {
 			sprite.setTextureRect(IntRect(0, 0, 54, 54));
 			delta.setY(-speed);
 			delta.setX(0);
-			//position.setY(position.getY() - speed);
 			break;
 		case RIGHT:
 			sprite.setTextureRect(IntRect(162, 0, 54, 54));
 			delta.setX(speed);
 			delta.setY(0);
-			//position.setX(position.getX() + speed);
 			break;
 		case DOWN:
 			sprite.setTextureRect(IntRect(108, 0, 54, 54));
 			delta.setY(speed);
 			delta.setX(0);
-			//position.setY(position.getY() + speed);
 			break;
 		case LEFT:
 			sprite.setTextureRect(IntRect(54, 0, 54, 54));
 			delta.setX(-speed);
 			delta.setY(0);
-			//position.setX(position.getX() - speed);
 			break;
 		default:
 			break;
@@ -79,4 +85,15 @@ bool Tank::checkBoarderCollision(int currentX, int currentY, Direction currentDi
 	if (newPosition.getX() < 0 || newPosition.getX() > 1026 || newPosition.getY() < 0 || newPosition.getY() > 1026)
 		return true;
 	else return false;
+}
+
+void Tank::shoot(float time) {
+	bullet.setIsActive(true);
+	bullet.setDirection(this->getDirection());
+	//bullet.setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() +18));
+	if (getDirection() == UP) bullet.setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() - 9));
+	if (getDirection() == LEFT) bullet.setPosition(Position(this->getPosition().getX() - 9, this->getPosition().getY() + 18));
+	if (getDirection() == DOWN)	bullet.setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() + 45));
+	if (getDirection() == RIGHT) bullet.setPosition(Position(this->getPosition().getX() + 45, this->getPosition().getY() + 18));
+
 }

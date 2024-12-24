@@ -6,7 +6,7 @@
 
 using namespace sf;
 
-void checkCollisionTank(Tank& tank, Map& map) {
+static void checkCollisionTank(Tank& tank, Map& map) {
 	/*for (int y = (tank.getPosition().getY() + 5) / 54; y < (tank.getPosition().getY() + 49) / 54; y++) {
 		for (int x = (tank.getPosition().getX() + 5) / 54; x < (tank.getPosition().getX() + 49) / 54; x++) {
 			Wall rect = map.getCell(y, x);
@@ -64,6 +64,57 @@ void checkCollisionTank(Tank& tank, Map& map) {
 	}
 }
 
+void checkCollisionBullet(Bullet& bullet, Map& map) {
+	if (!bullet.getIsActive()) return;
+
+	// Размер клетки карты
+	const int cellSize = 54;
+	const int bulletSize = 18;
+
+	int bulletTopLeftX = bullet.getPosition().getX() / cellSize;
+	int bulletTopLeftY = bullet.getPosition().getY() / cellSize;
+	int bulletBottomRightX = (bullet.getPosition().getX() + bulletSize - 1) / cellSize;
+	int bulletBottomRightY = (bullet.getPosition().getY() + bulletSize - 1) / cellSize;
+
+	FloatRect bullet_obj(bullet.getPosition().getX(), bullet.getPosition().getY(), bulletSize, bulletSize);
+
+	for (int y = bulletTopLeftY; y <= bulletBottomRightY; ++y) {
+		for (int x = bulletTopLeftX; x <= bulletBottomRightX; ++x) {
+			Wall wall = map.getCell(y, x);
+			if (wall.getType() == Empty || wall.getType() == Tree || wall.getType() == Ice || wall.getType() == Water) {
+				continue;
+			}
+
+			FloatRect walls(x * cellSize, y * cellSize, cellSize, cellSize);
+
+			if (walls.intersects(bullet_obj)) {
+
+				bullet.setIsActive(false);
+				
+				WallType type = wall.getType();
+				switch (type)
+				{
+				case WoodenWall:
+					map.getCell(y, x).setType(Empty);
+					break;
+				case BrickWallHigh:
+					map.getCell(y, x).setType(BrickWallHalf);
+					break;
+				case BrickWallHalf:
+					map.getCell(y, x).setType(BrickWallLow);
+					break;
+				case BrickWallLow:
+					map.getCell(y, x).setType(Empty);
+					break;
+				default:
+					break;
+				}
+				return;
+			}
+		}
+	}
+}
+
 
 int main()
 {
@@ -76,8 +127,6 @@ int main()
 	window.setVerticalSyncEnabled(true);
 	// Инициализация игрока
 	Player_Tank ptank(Position(54,54),UP,3,0,1);
-
-	Bullet bullet(Position(0, 0), RIGHT, 0.3);
 
 	// Часы для привязки ко времени
 	Clock clock;
@@ -96,14 +145,25 @@ int main()
 				window.close();
 		}
 		window.clear(Color::Blue);
+
+		//Отрисовка карты
 		map.draw(window);
+		
 		// Включаем контроллер
 		ptank.control(time);
+		
+		// Проверка коллизий
 		checkCollisionTank(ptank, map);
+		checkCollisionBullet(ptank.getBullets(), map);
+
+		// Отрисовка снарядов
+		if (ptank.getBullets().getIsActive() && !ptank.getBullets().checkBoarderCollision(ptank.getBullets().getPosition().getX(), ptank.getBullets().getPosition().getY(), ptank.getBullets().getDirection(), ptank.getBullets().getSpeed(), time)) {
+			ptank.getBullets().move(time);
+			window.draw(ptank.getBullets().getSprite());
+		}
 		// Отрисовываем игрока
-		bullet.move(time);
 		window.draw(ptank.getSprite());
-		window.draw(bullet.getSprite());
+
 		window.display();
 	}
 	return 0;

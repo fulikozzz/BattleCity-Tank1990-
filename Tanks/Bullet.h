@@ -11,6 +11,7 @@ private:
 	Position position;
 	Direction direction;
 	float speed;
+	bool isActive;
 
 	// Для отрисовки
 	Position delta;
@@ -20,20 +21,28 @@ private:
 	Sprite sprite;
 	
 public:
+	Bullet();
 	Bullet(Position initPosition, Direction initDirection, float initSpeed);
 
 	Position getPosition();
 	Direction getDirection();
 	float getSpeed();
+	bool getIsActive();
 	void setPosition(Position newPosition);
 	void setDirection(Direction newDirection);
 	void setSpeed(float value);
-
+	void setIsActive(bool value);
+	
 	void move(float time);
 
-	bool checkBoarderCollision(int currentX, int currentY, Direction currentDirection, float speed, float time);
+	bool checkBoarderCollision(float currentX, float currentY, Direction currentDirection, float speed, float time);
 
-
+	//Для отрисовки
 	Sprite getSprite();
+	String getImagePath();
+	Texture& getTexture();
+	void setPath();
+	void setTextures();
+	void setSprite();
 };
 

@@ -1,5 +1,5 @@
 #include "Player_Tank.h"
-
+#include <iostream>
 Player_Tank::Player_Tank(Position initPosition, Direction initDirection, int initLives, float initSpeed, int initArmor) :
 	Tank("textures/Player_tank_sprite.png", initPosition, initDirection, initLives, initSpeed), score(0), armor(initArmor) {}
 
@@ -25,6 +25,12 @@ void Player_Tank::control(float time) {
 	if (Keyboard::isKeyPressed(Keyboard::D)) {
 		setDirection(RIGHT);
 		is_Moving = true;
+	}
+	if (Keyboard::isKeyPressed(Keyboard::F)) {
+		if (!getBullets().getIsActive()) {
+			shoot(time);
+		}
+
 	}
 	if (is_Moving) {
 		setSpeed(0.1);
