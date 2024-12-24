@@ -20,6 +20,8 @@ Tank::Tank(String image_path, Position initPosition, Direction initDirection, in
 	sprite.setTexture(texture);
 	sprite.setTextureRect(IntRect(0, 0, 54, 54));
 	sprite.setPosition(initPosition.getX(), initPosition.getY());
+
+	lastShotTime = std::chrono::steady_clock::now();
 }
 
 Position Tank::getPosition() { return position; }
@@ -91,24 +93,30 @@ bool Tank::checkBoarderCollision(int currentX, int currentY, Direction currentDi
 }
 
 void Tank::shoot(float time) {
-	// Найти первый неактивный снаряд
+	// Получаем текущее время
+	auto now = chrono::steady_clock::now();
+
+	// Достаточно ли времени прошло с последнего выстрела
+	if (now - lastShotTime < shotCooldown) {
+		return; 
+	}
+
+	// Поиск первого неактивный снаряд
 	auto it = find_if(getBullets().begin(), getBullets().end(), [](Bullet& bullet) {
-		return !bullet.getIsActive(); // Найти неактивный снаряд
+		return !bullet.getIsActive(); 
 		});
 
 	// Если найден неактивный снаряд
 	if (it != getBullets().end()) {
-		it->setIsActive(true);  // Активировать снаряд
-		it->setDirection(this->getDirection());  // Установить направление
-
-		// Установить позицию снаряда в зависимости от направления
-		if (getDirection() == UP)
-			it->setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() - 9));
-		else if (getDirection() == LEFT)
-			it->setPosition(Position(this->getPosition().getX() - 9, this->getPosition().getY() + 18));
-		else if (getDirection() == DOWN)
-			it->setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() + 45));
-		else if (getDirection() == RIGHT)
-			it->setPosition(Position(this->getPosition().getX() + 45, this->getPosition().getY() + 18));
+		it->setIsActive(true);  
+		it->setDirection(this->getDirection());  
+		
+		if (getDirection() == UP) it->setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() - 9));
+		else if (getDirection() == LEFT) it->setPosition(Position(this->getPosition().getX() - 9, this->getPosition().getY() + 18));
+		else if (getDirection() == DOWN) it->setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() + 45));
+		else if (getDirection() == RIGHT) it->setPosition(Position(this->getPosition().getX() + 45, this->getPosition().getY() + 18));
 	}
+
+	//Обновляем время последнего выстрела
+	lastShotTime = now;
 }
