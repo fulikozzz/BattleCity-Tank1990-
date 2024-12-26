@@ -35,6 +35,6 @@ C:\Users\kazan\source\repos\Tanks\Tanks\Tanks.cpp(136,20): warning C4244: ини
 C:\Users\kazan\source\repos\Tanks\Tanks\Tanks.cpp(137,20): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
 C:\Users\kazan\source\repos\Tanks\Tanks\Tanks.cpp(138,24): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
 C:\Users\kazan\source\repos\Tanks\Tanks\Tanks.cpp(139,24): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
-C:\Users\kazan\source\repos\Tanks\Tanks\Tanks.cpp(186,55): warning C4305: аргумент: усечение из "double" в "float"
-C:\Users\kazan\source\repos\Tanks\Tanks\Tanks.cpp(201,14): warning C4244: инициализация: преобразование "sf::Int64" в "float", возможна потеря данных
+C:\Users\kazan\source\repos\Tanks\Tanks\Tanks.cpp(187,55): warning C4305: аргумент: усечение из "double" в "float"
+C:\Users\kazan\source\repos\Tanks\Tanks\Tanks.cpp(202,14): warning C4244: инициализация: преобразование "sf::Int64" в "float", возможна потеря данных
   Tanks.vcxproj -> C:\Users\kazan\source\repos\Tanks\x64\Debug\Tanks.exe

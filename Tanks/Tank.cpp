@@ -98,7 +98,7 @@ void Tank::shoot(float time) {
 
 	// Достаточно ли времени прошло с последнего выстрела
 	if (now - lastShotTime < shotCooldown) {
-		return; 
+		return;
 	}
 
 	// Поиск первого неактивный снаряд

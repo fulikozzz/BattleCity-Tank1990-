@@ -1,6 +1,6 @@
 ﻿#include <SFML/Graphics.hpp>
 #include "Map.h"
-
+#include "Main_menu.h"
 #include "Player_Tank.h"
 #include "Enemy.h"
 #include "Bullet.h"
@@ -132,7 +132,7 @@ static bool checkCollision_BulletsWithEnemies(Bullet& player_bullet, vector<Enem
 	FloatRect bullet_obj(player_bullet.getPosition().getX(), player_bullet.getPosition().getY(), bulletSize, bulletSize);
 
 	int count = 0;
-	for (vector<Enemy>::iterator enemy = enemies.begin(); enemy != enemies.end(); ++enemy) {
+	for (vector<Enemy>::iterator enemy = enemies.begin(); enemy != enemies.end();++enemy) {
 		int tankTopLeftX = enemy->getPosition().getX() / cellSize;
 		int tankTopLeftY = enemy->getPosition().getY() / cellSize;
 		int tankBottomRightX = (enemy->getPosition().getX() + cellSize - 1) / cellSize;
@@ -162,6 +162,7 @@ int main()
 {
 
 	RenderWindow window(VideoMode(1920, 1080), L"Tank1990", Style::Default);
+	menu(window);
 	// Загрузка карты
 	Map map = Map();
 	map.loadFromFile("maps/map1.txt");
