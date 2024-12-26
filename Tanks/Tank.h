@@ -36,7 +36,7 @@ private:
 
 public:
 	Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed);
-
+	
 	Position getPosition();
 	Direction getDirection();
 	int getLives();

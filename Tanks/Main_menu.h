@@ -41,6 +41,11 @@ void menu(RenderWindow& window) {
 				if (menu1.getPosition().y == 430) {
 					isMenu = false;
 				}
+				if (menu1.getPosition().y == 760) {
+					window.close();
+					isMenu = false;
+				}
+
 			}
 
 		window.draw(menuBg);

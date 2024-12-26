@@ -7,6 +7,8 @@
 
 using namespace sf;
 
+
+
 static bool checkCollisionTank(Tank& tank, Map& map) {
 	/*for (int y = (tank.getPosition().getY() + 5) / 54; y < (tank.getPosition().getY() + 49) / 54; y++) {
 		for (int x = (tank.getPosition().getX() + 5) / 54; x < (tank.getPosition().getX() + 49) / 54; x++) {
@@ -93,6 +95,10 @@ static bool checkCollisionBullet(Bullet& bullet, Map& map) {
 			if (walls.intersects(bullet_obj)) {
 
 				bullet.setIsActive(false);
+				bullet.setExpPath();
+				bullet.setExpTextures();
+				bullet.setExpSprite();
+				bullet.startExplosion();
 				
 				WallType type = wall.getType();
 				switch (type)
@@ -132,7 +138,7 @@ static bool checkCollision_BulletsWithEnemies(Bullet& player_bullet, vector<Enem
 	FloatRect bullet_obj(player_bullet.getPosition().getX(), player_bullet.getPosition().getY(), bulletSize, bulletSize);
 
 	int count = 0;
-	for (vector<Enemy>::iterator enemy = enemies.begin(); enemy != enemies.end();++enemy) {
+	for (auto enemy = enemies.begin(); enemy != enemies.end();++enemy) {
 		int tankTopLeftX = enemy->getPosition().getX() / cellSize;
 		int tankTopLeftY = enemy->getPosition().getY() / cellSize;
 		int tankBottomRightX = (enemy->getPosition().getX() + cellSize - 1) / cellSize;
@@ -144,9 +150,14 @@ static bool checkCollision_BulletsWithEnemies(Bullet& player_bullet, vector<Enem
 			for (int x = tankTopLeftX; x <= tankBottomRightX; ++x) {
 				if (bullet_obj.intersects(tank_obj)) {
 					//enemies.erase(enemies.begin() + count);
-					enemies.clear();
-					//enemies.erase(enemy);
+					
+
+					enemies.pop_back();
 					player_bullet.setIsActive(false);
+					player_bullet.setExpPath();
+					player_bullet.setExpTextures();
+					player_bullet.setExpSprite();
+					player_bullet.startExplosion();
 					return true;
 				}
 			}
@@ -225,6 +236,8 @@ int main()
 			(it)->enemy_control(time);
 			for (auto& bullet : (it)->getBullets()) {
 				checkCollisionBullet(bullet, map);
+				bullet.updateExplosion(time);
+				bullet.renderExplosion(window);
 				if (bullet.getIsActive() && !bullet.checkBoarderCollision(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getDirection(), bullet.getSpeed(), time)) {
 					bullet.move(time);
 					window.draw(bullet.getSprite());
@@ -236,8 +249,11 @@ int main()
 		
 		// Проверка коллизий
 		checkCollisionTank(ptank, map);
+		
 		for (auto& bullet : ptank.getBullets()) {
 			checkCollisionBullet(bullet, map);
+			bullet.updateExplosion(time);
+			bullet.renderExplosion(window);
 		}
 
 		// Отрисовка снарядов
@@ -247,7 +263,9 @@ int main()
 				window.draw(bullet.getSprite());
 				checkCollision_BulletsWithEnemies(bullet, enemies);
 			}
+		
 		}
+
 		// Отрисовываем игрока
 		window.draw(ptank.getSprite());
 
