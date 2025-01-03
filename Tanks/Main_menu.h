@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <chrono>
 using namespace sf;
 
@@ -6,6 +7,12 @@ using namespace sf;
 chrono::steady_clock::time_point lastClick;  //время последнего выстрела
 const chrono::milliseconds clickCooldown = std::chrono::milliseconds(100);
 void menu(RenderWindow& window) {
+	sf::SoundBuffer buffer;
+	buffer.loadFromFile("audio/main_menu_sound.wav");
+	sf::Sound sound;
+	sound.setBuffer(buffer);
+	sound.play();
+	
 	window.setVerticalSyncEnabled(true);
 	Texture menuTexture1, menuBackground;
 	menuTexture1.loadFromFile("textures/menu_tank_sprite.png");
@@ -21,6 +28,7 @@ void menu(RenderWindow& window) {
 
 	//////////////////////////////МЕНЮ///////////////////
 	while (isMenu) {
+		
 		auto now = std::chrono::steady_clock::now();
 		if (now - lastClick < clickCooldown) {
 			continue;

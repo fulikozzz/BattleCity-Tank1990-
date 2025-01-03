@@ -2,7 +2,7 @@
 #include "Position.h"
 #include "Direction.h"
 #include "Bullet.h"
-
+#include "SFML/Audio.hpp"
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <algorithm>
@@ -28,15 +28,23 @@ private:
 	Image image;
 	Texture texture;
 	Sprite sprite;
+	
 
 	// Для стрельбы
-	chrono::steady_clock::time_point lastShotTime;  //время последнего выстрела
-	const chrono::milliseconds shotCooldown = std::chrono::milliseconds(700);  // Задержка между выстрелами
+	bool isPlayerControlled = false; 
+	SoundBuffer shootBuffer;     
+	Sound shootSound;           
+
+protected:
+	void playShootSound();
+	
 
 
 public:
 	Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed);
-	
+	chrono::steady_clock::time_point lastShotTime;  //время последнего выстрела
+	const chrono::milliseconds shotCooldown = std::chrono::milliseconds(700);  // Задержка между выстрелами
+	void setShootSound(const std::string& filepath);
 	Position getPosition();
 	Direction getDirection();
 	int getLives();

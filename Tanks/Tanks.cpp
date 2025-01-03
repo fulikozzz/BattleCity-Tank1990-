@@ -89,10 +89,12 @@ static bool checkCollisionBullet(Bullet& bullet, Map& map) {
 			if (wall.getType() == Empty || wall.getType() == Tree || wall.getType() == Ice || wall.getType() == Water) {
 				continue;
 			}
+			
 
 			FloatRect walls(x * cellSize, y * cellSize, cellSize, cellSize);
 
 			if (walls.intersects(bullet_obj)) {
+				
 
 				bullet.setIsActive(false);
 				bullet.setExpPath();
@@ -177,6 +179,19 @@ int main()
 	// Загрузка карты
 	Map map = Map();
 	map.loadFromFile("maps/map1.txt");
+	static sf::SoundBuffer shootBuffer;
+	static bool isBufferLoaded = false;
+
+	if (!isBufferLoaded) {
+		if (!shootBuffer.loadFromFile("audio/shoot_standart.wav")) {
+		
+		}
+		isBufferLoaded = true;
+	}
+
+	static sf::Sound shootSound;
+	shootSound.setBuffer(shootBuffer);
+	shootSound.play();
 	
 	window.setVerticalSyncEnabled(true);
 	// Инициализация игрока
@@ -196,6 +211,7 @@ int main()
 		enemy.getBullets().resize(AMOUNT_OF_BULLETS);
 		for (int i = 0; i < AMOUNT_OF_BULLETS; i++) {
 			enemy.getBullets()[i] = Bullet(Position(0, 0), UP, 0.2);
+			
 			//Для отрисовки снаряда
 			enemy.getBullets()[i].setPath();
 			enemy.getBullets()[i].setTextures();
@@ -238,6 +254,7 @@ int main()
 				checkCollisionBullet(bullet, map);
 				bullet.updateExplosion(time);
 				bullet.renderExplosion(window);
+				
 				if (bullet.getIsActive() && !bullet.checkBoarderCollision(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getDirection(), bullet.getSpeed(), time)) {
 					bullet.move(time);
 					window.draw(bullet.getSprite());
@@ -268,7 +285,6 @@ int main()
 
 		// Отрисовываем игрока
 		window.draw(ptank.getSprite());
-
 		window.display();
 	}
 	return 0;
