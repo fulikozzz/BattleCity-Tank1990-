@@ -1,6 +1,6 @@
 #include "Tank.h"
 #include "Map.h"
-#include <iostream>
+
 Tank::Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed) :
 	image_path(image_path), position(initPosition), direction(initDirection), lives(initLives), speed(initSpeed), delta(Position(0, 0)) {
 	//Инициализация снаряда
@@ -24,12 +24,43 @@ Tank::Tank(String image_path, Position initPosition, Direction initDirection, in
 	lastShotTime = std::chrono::steady_clock::now();
 }
 
+
+Tank& Tank::operator=(const Tank& other) {
+	position = other.position;
+	direction = other.direction;
+	lives = other.lives;
+	speed = other.speed;
+
+	bullets.resize(AMOUNT_OF_BULLETS);
+	for (int i = 0; i < AMOUNT_OF_BULLETS; i++) {
+	bullets[i] = Bullet(Position(0, 0), UP, 0.2);
+		//Для отрисовки снаряда
+		bullets[i].setPath();
+		bullets[i].setTextures();
+		bullets[i].setSprite();
+		bullets[i].getSprite().setPosition(0, 0);
+	}
+
+	// Для отрисовки
+	delta = other.delta;
+	image_path = other.image_path;
+	image.loadFromFile(image_path);
+	image.createMaskFromColor(Color::Black);
+	texture.loadFromImage(image);
+	sprite.setTexture(texture);
+	return *this;
+}
+
+Tank::Tank(const Tank& other) {
+	operator=(other);
+}
+
 Position Tank::getPosition() { return position; }
 Direction Tank::getDirection() { return direction; }
 int Tank::getLives() { return lives; }
 float Tank::getSpeed() { return speed; }
 vector<Bullet>& Tank::getBullets() { return bullets; }
-Sprite Tank::getSprite() { return sprite; }
+Sprite& Tank::getSprite() { return sprite; }
 void Tank::setPosition(Position newPosition) { position = newPosition; }
 void Tank::setDirection(Direction newDirection) { direction = newDirection; }
 void Tank::setLives(int value) { lives = value; }

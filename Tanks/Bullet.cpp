@@ -11,8 +11,6 @@ Bullet::Bullet(Position initPosition, Direction initDirection, float initSpeed) 
 	texture.loadFromImage(image);
 	sprite.setTexture(texture);
 	sprite.setPosition(initPosition.getX(), initPosition.getY());
-	; // Изначально показываем первый кадр
-
 }
 
 Position Bullet::getPosition() { return position; }

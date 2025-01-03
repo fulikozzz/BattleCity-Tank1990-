@@ -1,9 +1,10 @@
 #include "Position.h"
 
-Position::Position(float x, float y) {
-	this->x = x;
-	this->y = y;
-}
+Position::Position() : x(0), y(0) {}
+
+Position::Position(float x, float y) : x(x), y(y) {}
+
+Position::Position(const Position& other) : x(other.x), y(other.y) {}
 
 float Position::getX() { return x; }
 

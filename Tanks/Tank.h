@@ -36,13 +36,15 @@ private:
 
 public:
 	Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed);
-	
+	Tank(const Tank& other);
+	Tank& operator=(const Tank& other);
+
 	Position getPosition();
 	Direction getDirection();
 	int getLives();
 	float getSpeed();
 	vector<Bullet>& getBullets();
-	Sprite getSprite();
+	Sprite& getSprite();
 	void setPosition(Position newPosition);
 	void setDirection(Direction newDirection);
 	void setLives(int value);

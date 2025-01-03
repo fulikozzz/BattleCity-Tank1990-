@@ -21,12 +21,21 @@ void menu(RenderWindow& window) {
 
 	//////////////////////////////лемч///////////////////
 	while (isMenu) {
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::Closed)
+				window.close();
+			if (event.type == Event::Resized)
+				window.setSize(sf::Vector2u(event.size.width, event.size.height));
+
+		}
 		auto now = std::chrono::steady_clock::now();
 		if (now - lastClick < clickCooldown) {
 			continue;
 		}
 	
-		
+
 			if (Keyboard::isKeyPressed(Keyboard::W)) {
 				if (menu1.getPosition().y - 110 >= 430) {
 					menu1.setPosition(620, menu1.getPosition().y - 110);

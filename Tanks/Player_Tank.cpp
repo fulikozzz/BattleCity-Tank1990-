@@ -1,5 +1,6 @@
 #include "Player_Tank.h"
 #include <iostream>
+
 Player_Tank::Player_Tank(Position initPosition, Direction initDirection, int initLives, float initSpeed, int initArmor) :
 	Tank("textures/Player_tank_sprite.png", initPosition, initDirection, initLives, initSpeed), score(0), armor(initArmor) {}
 

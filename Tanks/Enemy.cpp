@@ -3,8 +3,21 @@
 #include <random>
 
 Enemy::Enemy(Position initPosition, Direction initDirection, int initLives, float initSpeed, int initArmor) :
-    Tank("textures/Player_tank_sprite.png", initPosition, initDirection, initLives, initSpeed), armor(initArmor),
+    Tank("textures/enemy_tank_sprite.png", initPosition, initDirection, initLives, initSpeed), armor(initArmor),
     randomMovementTime(0.0f), isRandomMovement(false) {}
+
+Enemy& Enemy::operator=(const Enemy& other) {
+    if (this == &other) return *this;
+
+    Tank::operator=(other);
+    armor = other.armor;
+    pBaseX = other.pBaseX;
+    pBaseY = other.pBaseY;
+    randomMovementTime = other.randomMovementTime;
+    isRandomMovement = other.isRandomMovement;
+
+    return *this;
+}
 
 int Enemy::getArmor() { return armor; }
 void Enemy::setArmor(int value) { armor = value; }
@@ -20,7 +33,11 @@ void Enemy::startRandomMovement() {
 }
 
 void Enemy::enemy_control(float time) {
-    shoot(time);
+    int chance = rand() % 1000;  // Получаем число от 0 до 99
+    if (chance < 10) {           // Если число меньше 30, то вероятность 30%
+        shoot(time);              // Вызов функции стрельбы
+    }
+
     if (isRandomMovement) {
         randomMovementTime -= time;
 
@@ -50,7 +67,6 @@ void Enemy::enemy_control(float time) {
             setDirection(UP);
             incorrectPos = true;
         }
-
 
         if (incorrectPos) {
             setSpeed(0.1);

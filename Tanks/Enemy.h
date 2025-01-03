@@ -15,6 +15,8 @@ private:
 
 public:
 	Enemy(Position initPosition, Direction initDirection, int initLives, float initSpeed, int initArmor);
+	Enemy(const Enemy& other) = default;
+	Enemy& operator=(const Enemy& other);
 
 	int getArmor();
 	void setArmor(int value);

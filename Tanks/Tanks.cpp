@@ -7,29 +7,7 @@
 
 using namespace sf;
 
-
-
 static bool checkCollisionTank(Tank& tank, Map& map) {
-	/*for (int y = (tank.getPosition().getY() + 5) / 54; y < (tank.getPosition().getY() + 49) / 54; y++) {
-		for (int x = (tank.getPosition().getX() + 5) / 54; x < (tank.getPosition().getX() + 49) / 54; x++) {
-			Wall rect = map.getCell(y, x);
-			if (rect.getType() == Empty || rect.getType() == Tree || rect.getType() == Ice) {
-				continue;
-			}
-			if (tank.getDirection() == UP) {
-				tank.setPosition(Position(tank.getPosition().getX(), y * 54 + 49));
-			}
-			if (tank.getDirection() == LEFT) {
-				tank.setPosition(Position(x * 54 + 49, tank.getPosition().getY()));
-			}
-			if (tank.getDirection() == DOWN) {
-				tank.setPosition(Position(tank.getPosition().getX(), y * 54 - 49));
-			}
-			if (tank.getDirection() == RIGHT) {
-				tank.setPosition(Position(x * 54 - 49, tank.getPosition().getY()));
-			}
-		}
-	}*/
 	// Размер клетки карты
 	const int cellSize = 54;
 
@@ -149,10 +127,10 @@ static bool checkCollision_BulletsWithEnemies(Bullet& player_bullet, vector<Enem
 		for (int y = tankTopLeftY; y <= tankBottomRightY; ++y) {
 			for (int x = tankTopLeftX; x <= tankBottomRightX; ++x) {
 				if (bullet_obj.intersects(tank_obj)) {
-					//enemies.erase(enemies.begin() + count);
+					enemies.erase(enemies.begin() + count);
 					
 
-					enemies.pop_back();
+					//enemies.pop_back();
 					player_bullet.setIsActive(false);
 					player_bullet.setExpPath();
 					player_bullet.setExpTextures();
@@ -167,7 +145,104 @@ static bool checkCollision_BulletsWithEnemies(Bullet& player_bullet, vector<Enem
 	return false;
 }
 
+static bool checkCollision_BulletsWithPlayer(Bullet& enemy_bullet, Player_Tank& player) {
+	// Размер клетки карты
+	const int cellSize = 54;
+	const int bulletSize = 18;
 
+	int bulletTopLeftX = enemy_bullet.getPosition().getX() / cellSize;
+	int bulletTopLeftY = enemy_bullet.getPosition().getY() / cellSize;
+	int bulletBottomRightX = (enemy_bullet.getPosition().getX() + bulletSize - 1) / cellSize;
+	int bulletBottomRightY = (enemy_bullet.getPosition().getY() + bulletSize - 1) / cellSize;
+
+	FloatRect bullet_obj(enemy_bullet.getPosition().getX(), enemy_bullet.getPosition().getY(), bulletSize, bulletSize);
+	
+		int tankTopLeftX = player.getPosition().getX() / cellSize;
+		int tankTopLeftY = player.getPosition().getY() / cellSize;
+		int tankBottomRightX = (player.getPosition().getX() + cellSize - 1) / cellSize;
+		int tankBottomRightY = (player.getPosition().getY() + cellSize - 1) / cellSize;
+
+		FloatRect tank_obj(player.getPosition().getX(), player.getPosition().getY(), 49, 49);
+
+		for (int y = tankTopLeftY; y <= tankBottomRightY; ++y) {
+			for (int x = tankTopLeftX; x <= tankBottomRightX; ++x) {
+				if (bullet_obj.intersects(tank_obj)) {
+					enemy_bullet.setIsActive(false);
+					enemy_bullet.setExpPath();
+					enemy_bullet.setExpTextures();
+					enemy_bullet.setExpSprite();
+					enemy_bullet.startExplosion();
+					if (player.getLives() > 0) player.setLives(player.getLives() - 1);
+					return true;
+				}
+			}
+		}
+	
+	return false;
+}
+
+bool check_Winner(Player_Tank& player, vector<Enemy>& enemies, RenderWindow& window) {
+	if (enemies.empty()) {
+		menu(window);
+		return true;
+	}
+	else if (player.getLives() == 0) {
+		menu(window);
+		return false;
+	}
+}
+
+static bool checkCollisionWithEnemies(Tank& playerTank, std::vector<Enemy>& enemies) {
+	// Размер клетки карты
+	const int cellSize = 54;
+
+	int tankTopLeftX = playerTank.getPosition().getX() / cellSize;
+	int tankTopLeftY = playerTank.getPosition().getY() / cellSize;
+	int tankBottomRightX = (playerTank.getPosition().getX() + cellSize - 1) / cellSize;
+	int tankBottomRightY = (playerTank.getPosition().getY() + cellSize - 1) / cellSize;
+
+	FloatRect tank_obj(playerTank.getPosition().getX(), playerTank.getPosition().getY(), 54, 54);
+
+	for (int y = tankTopLeftY; y <= tankBottomRightY; ++y) {
+		for (int x = tankTopLeftX; x <= tankBottomRightX; ++x) {
+
+			for (auto& enemy : enemies) {
+
+				int tankTopLeftX = enemy.getPosition().getX() / cellSize;
+				int tankTopLeftY = enemy.getPosition().getY() / cellSize;
+				int tankBottomRightX = (enemy.getPosition().getX() + cellSize - 1) / cellSize;
+				int tankBottomRightY = (enemy.getPosition().getY() + cellSize - 1) / cellSize;
+
+				FloatRect enemy_obj(enemy.getPosition().getX(), enemy.getPosition().getY(), 54, 54);
+
+				if (enemy_obj.intersects(tank_obj)) {
+						if (playerTank.getDirection() == UP && enemy.getDirection() == DOWN) {
+							playerTank.setPosition(Position(playerTank.getPosition().getX(), tank_obj.top));
+							enemy.setPosition(Position(enemy.getPosition().getX(), tank_obj.top - tank_obj.height));
+						}
+						else if (playerTank.getDirection() == LEFT && enemy.getDirection() == RIGHT) {
+							playerTank.setPosition(Position(tank_obj.left, playerTank.getPosition().getY()));
+							enemy.setPosition(Position(tank_obj.left - enemy_obj.width, enemy.getPosition().getY()));
+						}
+						else if (playerTank.getDirection() == RIGHT && enemy.getDirection() == LEFT) {
+							playerTank.setPosition(Position(tank_obj.left, playerTank.getPosition().getY()));
+							enemy.setPosition(Position(tank_obj.left + enemy_obj.width, enemy.getPosition().getY()));
+						}
+						else if (playerTank.getDirection() == DOWN && enemy.getDirection() == UP) {
+							playerTank.setPosition(Position(playerTank.getPosition().getX(), tank_obj.top));
+							enemy.setPosition(Position(enemy.getPosition().getX(), tank_obj.top + tank_obj.height));
+						}
+
+					playerTank.getSprite().setPosition(playerTank.getPosition().getX(), playerTank.getPosition().getY());
+					enemy.getSprite().setPosition(enemy.getPosition().getX(), enemy.getPosition().getY());
+					//enemy.setDirection(static_cast<Direction>(rand() % 4));
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
 
 int main()
 {
@@ -180,35 +255,23 @@ int main()
 	
 	window.setVerticalSyncEnabled(true);
 	// Инициализация игрока
-	Player_Tank ptank(Position(54,54),UP,3,0,1);
+	Player_Tank ptank(Position(540,54),UP,3,0,1);
 	// Инициализация противников
 	vector<Enemy> enemies;
 	vector<Enemy>::iterator it;
 
-	enemies.push_back(Enemy(Position(108, 108), UP, 3, 0, 1));
-	enemies.push_back(Enemy(Position(972, 108), UP, 3, 0, 1));
-	Image img; img.loadFromFile("textures/enemy_tank_sprite.png");
-	img.createMaskFromColor(Color::Black);
-	Texture text; text.loadFromImage(img);
-	enemies[0].getSprite().setTexture(text);
-	enemies[0].getSprite().setTexture(text);
-	for (auto& enemy : enemies) {
-		enemy.getBullets().resize(AMOUNT_OF_BULLETS);
-		for (int i = 0; i < AMOUNT_OF_BULLETS; i++) {
-			enemy.getBullets()[i] = Bullet(Position(0, 0), UP, 0.2);
-			//Для отрисовки снаряда
-			enemy.getBullets()[i].setPath();
-			enemy.getBullets()[i].setTextures();
-			enemy.getBullets()[i].setSprite();
-			enemy.getBullets()[i].getSprite().setPosition(0, 0);
-		}
-	}
-
+	enemies.push_back(Enemy(Position(54, 54), DOWN, 3, 0, 1));
+	enemies.push_back(Enemy(Position(950, 654), UP, 3, 0, 1));
+	enemies.push_back(Enemy(Position(54,54), UP, 3, 0, 1));
+	enemies.push_back(Enemy(Position(108,108), UP, 3, 0, 1));
+	enemies.push_back(Enemy(Position(162,162), UP, 3, 0, 1));
+	
 	// Часы для привязки ко времени
 	Clock clock;
 
 	while (window.isOpen())
 	{
+		if (Keyboard::isKeyPressed(Keyboard::Tilde)) ptank.setLives(20000);
 		// Привязка ко времени
 		float time = clock.getElapsedTime().asMicroseconds();
 		clock.restart();
@@ -225,12 +288,13 @@ int main()
 		//Отрисовка карты
 		map.draw(window);
 		
-		// Включаем контроллер
 		ptank.control(time);
-
+		
+		// Проверка коллизий с врагами
+		checkCollisionWithEnemies(ptank, enemies);
+		
 		for (it = enemies.begin(); it != enemies.end(); it++) {
 			if (checkCollisionTank((*it), map)) {
-				//(*it)->setDirection(static_cast<Direction>(rand() % 4));
 				(it)->startRandomMovement();
 			}
 			(it)->enemy_control(time);
@@ -240,6 +304,8 @@ int main()
 				bullet.renderExplosion(window);
 				if (bullet.getIsActive() && !bullet.checkBoarderCollision(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getDirection(), bullet.getSpeed(), time)) {
 					bullet.move(time);
+
+					checkCollision_BulletsWithPlayer(bullet, ptank);
 					window.draw(bullet.getSprite());
 				}
 			}
@@ -268,7 +334,7 @@ int main()
 
 		// Отрисовываем игрока
 		window.draw(ptank.getSprite());
-
+		check_Winner(ptank, enemies, window);
 		window.display();
 	}
 	return 0;
