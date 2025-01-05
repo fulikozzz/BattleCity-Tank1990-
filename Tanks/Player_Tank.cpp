@@ -7,12 +7,16 @@ Player_Tank::Player_Tank(Position initPosition, Direction initDirection, int ini
 	setShootSound("audio/shoot_standart.wav");
 	engineBuffer.loadFromFile("audio/engine_music.wav");
 	engineSound.setBuffer(engineBuffer);
+	engineSound.setVolume(3);
 	idleBuffer.loadFromFile("audio/move_music.wav");
 	idleSound.setBuffer(idleBuffer);
+	idleSound.setVolume(7);
 }
 
 int Player_Tank::getScore() { return score; }
 int Player_Tank::getArmor() { return armor; }
+Sound& Player_Tank::getEngineSound() { return engineSound; }
+Sound& Player_Tank::getIdleSound() { return idleSound; }
 void Player_Tank::setScore(int value) { score = value; }
 void Player_Tank::setArmor(int value) { armor = value; }
 
@@ -43,7 +47,7 @@ void Player_Tank::control(float time) {
 
 	
 	if (is_Moving) {
-		setSpeed(0.1);
+		//setSpeed(0.1);
 
 		engineSound.play(); 
 

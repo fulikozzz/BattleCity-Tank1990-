@@ -11,11 +11,8 @@ Enemy& Enemy::operator=(const Enemy& other) {
 
     Tank::operator=(other);
     armor = other.armor;
-    pBaseX = other.pBaseX;
-    pBaseY = other.pBaseY;
     randomMovementTime = other.randomMovementTime;
     isRandomMovement = other.isRandomMovement;
-
     return *this;
 }
 
@@ -23,6 +20,7 @@ int Enemy::getArmor() { return armor; }
 void Enemy::setArmor(int value) { armor = value; }
 
 void Enemy::startRandomMovement() {
+    
     isRandomMovement = true;
     randomMovementTime = 800.0f;
     srand(static_cast <unsigned> (time(NULL)));
@@ -32,7 +30,7 @@ void Enemy::startRandomMovement() {
     setDirection(static_cast<Direction>(dist(gen)));
 }
 
-void Enemy::enemy_control(float time) {
+void Enemy::enemy_control(float time, Base& pBase) {
     int chance = rand() % 1000;  // Получаем число от 0 до 99
     if (chance < 10) {           // Если число меньше 30, то вероятность 30%
         shoot(time);              // Вызов функции стрельбы
@@ -40,8 +38,6 @@ void Enemy::enemy_control(float time) {
 
     if (isRandomMovement) {
         randomMovementTime -= time;
-
-        setSpeed(0.1);
         move(time);
 
         if (randomMovementTime <= 0) {
@@ -51,25 +47,24 @@ void Enemy::enemy_control(float time) {
 
     if (!isRandomMovement) {
         bool incorrectPos = false;
-        if (getPosition().getX() < pBaseX) {
+        if (getPosition().getX() < pBase.getPositon().getX()) {
             setDirection(RIGHT);
             incorrectPos = true;
         }
-        else if (getPosition().getY() < pBaseY) {
+        else if (getPosition().getY() <= pBase.getPositon().getY()) {
             setDirection(DOWN);
             incorrectPos = true;
         }
-        else if (getPosition().getX() > pBaseX) {
+        else if (getPosition().getX() >= pBase.getPositon().getX()) {
             setDirection(LEFT);
             incorrectPos = true;
         }
-        else if (getPosition().getY() > pBaseY) {
+        else if (getPosition().getY() > pBase.getPositon().getY()) {
             setDirection(UP);
             incorrectPos = true;
         }
 
         if (incorrectPos) {
-            setSpeed(0.1);
             switch (getDirection()) {
             case UP: move(time); break;
             case LEFT: move(time); break;

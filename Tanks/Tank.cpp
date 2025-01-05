@@ -71,12 +71,10 @@ void Tank::setSpeed(float value) { speed = value; }
 void Tank::setShootSound(const std::string& filepath) {
 	shootBuffer.loadFromFile(filepath);
 	shootSound.setBuffer(shootBuffer);
-	isPlayerControlled = true;
-	
-
+	shootSound.setVolume(10);
 }
 void Tank::playShootSound() {
-	if (isPlayerControlled && shootSound.getBuffer() != nullptr) {
+	if (shootSound.getBuffer() != nullptr) {
 		shootSound.play();
 	}
 }

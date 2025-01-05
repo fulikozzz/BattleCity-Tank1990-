@@ -17,10 +17,13 @@ Position Bullet::getPosition() { return position; }
 Direction Bullet::getDirection() { return direction; }
 float Bullet::getSpeed() { return speed; }
 bool Bullet::getIsActive() { return isActive; }
+bool Bullet::getIsExploding() { return isExploding; }
 void Bullet::setPosition(Position newPosition) { position = newPosition; }
 void Bullet::setDirection(Direction newDirection) { direction = newDirection; }
 void Bullet::setSpeed(float value) { speed = value; }
 void Bullet::setIsActive(bool value) { isActive = value; }
+void Bullet::setIsExploding(bool value) { isExploding = value; }
+
 void Bullet::startExplosion()
 {
 	isExploding = true;

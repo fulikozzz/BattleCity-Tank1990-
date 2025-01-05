@@ -1,4 +1,5 @@
 #include "Tank.h"
+#include "Base.h"
 
 #pragma once
 
@@ -6,9 +7,6 @@ class Enemy : public Tank
 {
 private:
 	int armor;
-
-	int pBaseX = 10 * 54;
-	int pBaseY = 18 * 54;
 	// Для случайного движения
 	float randomMovementTime;
 	bool isRandomMovement;
@@ -21,7 +19,7 @@ public:
 	int getArmor();
 	void setArmor(int value);
 
-	void enemy_control(float time);
+	void enemy_control(float time, Base& pBase);
 
 	void startRandomMovement();
 };

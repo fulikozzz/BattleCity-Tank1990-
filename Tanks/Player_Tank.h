@@ -18,9 +18,11 @@ public:
 
 	int getScore();
 	int getArmor();
+	Sound& getEngineSound();
+	Sound& getIdleSound();
 	void setScore(int value);
 	void setArmor(int value);
-
+	
 	void control(float time);
 
 };
