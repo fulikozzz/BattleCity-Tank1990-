@@ -252,6 +252,19 @@ int main()
 	// Загрузка карты
 	Map map = Map();
 	map.loadFromFile("maps/map1.txt");
+	static sf::SoundBuffer shootBuffer;
+	static bool isBufferLoaded = false;
+
+	if (!isBufferLoaded) {
+		if (!shootBuffer.loadFromFile("audio/shoot_standart.wav")) {
+		
+		}
+		isBufferLoaded = true;
+	}
+
+	static sf::Sound shootSound;
+	shootSound.setBuffer(shootBuffer);
+	shootSound.play();
 	
 	window.setVerticalSyncEnabled(true);
 	// Инициализация игрока

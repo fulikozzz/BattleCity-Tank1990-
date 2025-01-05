@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "Enemy.h"
 #include <stdexcept>
 #include <fstream>
 
@@ -86,7 +87,7 @@ void Map::loadTextures() {
     textures[Enemy_Base].loadFromImage(bases, IntRect(54, 0, 54, 54));
 }
 
-void Map::draw(sf::RenderWindow& window) {
+void Map::draw(sf::RenderWindow& window ) {
     const float cellSize = 54.0f;
 
     for (int y = 0; y < height; ++y) {

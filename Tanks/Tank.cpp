@@ -1,6 +1,8 @@
 #include "Tank.h"
 #include "Map.h"
 
+#include <SFML/Audio.hpp>
+#include <iostream>
 Tank::Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed) :
 	image_path(image_path), position(initPosition), direction(initDirection), lives(initLives), speed(initSpeed), delta(Position(0, 0)) {
 	//Инициализация снаряда
@@ -66,6 +68,19 @@ void Tank::setDirection(Direction newDirection) { direction = newDirection; }
 void Tank::setLives(int value) { lives = value; }
 void Tank::setSpeed(float value) { speed = value; }
 
+void Tank::setShootSound(const std::string& filepath) {
+	shootBuffer.loadFromFile(filepath);
+	shootSound.setBuffer(shootBuffer);
+	isPlayerControlled = true;
+	
+
+}
+void Tank::playShootSound() {
+	if (isPlayerControlled && shootSound.getBuffer() != nullptr) {
+		shootSound.play();
+	}
+}
+
 void Tank::move(float time) {
 	if (!checkBoarderCollision(position.getX(), position.getY(), direction, speed, time)) {
 		switch (direction)
@@ -95,7 +110,7 @@ void Tank::move(float time) {
 		}
 		position.setX(position.getX() + delta.getX() * time);
 		position.setY(position.getY() + delta.getY() * time);
-		speed = 0; 
+		speed = 0;
 		sprite.setPosition(position.getX(), position.getY());
 	}
 }
@@ -146,8 +161,10 @@ void Tank::shoot(float time) {
 		else if (getDirection() == LEFT) it->setPosition(Position(this->getPosition().getX() - 9, this->getPosition().getY() + 18));
 		else if (getDirection() == DOWN) it->setPosition(Position(this->getPosition().getX() + 18, this->getPosition().getY() + 45));
 		else if (getDirection() == RIGHT) it->setPosition(Position(this->getPosition().getX() + 45, this->getPosition().getY() + 18));
-	}
+	
+		playShootSound();
 
+	}
 	//Обновляем время последнего выстрела
 	lastShotTime = now;
 }
