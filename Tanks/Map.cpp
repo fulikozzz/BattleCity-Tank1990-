@@ -1,4 +1,6 @@
 #include "Map.h"
+#include "Enemy.h"
+
 #include <stdexcept>
 #include <fstream>
 
@@ -38,8 +40,14 @@ void Map::loadFromFile(string filePath) {
                 case '6': type = Tree; break;
                 case '7': type = Ice; break;
                 case '8': type = Water; break;
-                case 'p': type = Player_Base; break;
-                case 'e': type = Enemy_Base; break;
+                case 'p': type = Player_Base; 
+                    player_base.setPosition(Position(x, y));
+                    player_base.setIsDestroyed(false); 
+                    break;
+                case 'e': type = Enemy_Base; 
+                    enemy_base.setPosition(Position(x, y));
+                    enemy_base.setIsDestroyed(false); 
+                    break;
                 default: type = Empty; break;
                 }
                 grid[y][x] = Wall(Position(x, y), type);
@@ -56,12 +64,34 @@ int Map::getHeight() { return height; }
 
 int Map::getWidth() { return width; }
 
+Base& Map::getPlayerBase() { return player_base; }
+
+Base& Map::getEnemyBase() { return enemy_base; }
+
 Wall& Map::getCell(int x, int y) {
     if (x > width || x < 0 || y > height || y < 0) {
         throw out_of_range("Координаты за пределами карты.");
     }
     else return grid[x][y];
 }
+
+unordered_map<WallType, Texture>& Map::getMap() {
+    return textures;
+}
+
+Texture& Map::getCellTexture(int x, int y) {
+    if (x < 0 || x >= width || y < 0 || y >= height) {
+        throw out_of_range("Координаты за пределами карты.");
+    }
+
+    WallType cellType = getCell(y,x).getType(); 
+    if (textures.find(cellType) == textures.end()) {
+        throw runtime_error("Текстура для данного типа стены отсутствует.");
+    }
+
+    return textures[cellType];
+}
+
 
 void Map::loadTextures() {
     // Загрузка текстур в карту
@@ -86,7 +116,7 @@ void Map::loadTextures() {
     textures[Enemy_Base].loadFromImage(bases, IntRect(54, 0, 54, 54));
 }
 
-void Map::draw(sf::RenderWindow& window) {
+void Map::draw(RenderWindow& window ) {
     const float cellSize = 54.0f;
 
     for (int y = 0; y < height; ++y) {
