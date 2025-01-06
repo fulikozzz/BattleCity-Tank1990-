@@ -2,7 +2,7 @@
 #include "Map.h"
 
 #include <SFML/Audio.hpp>
-#include <iostream>
+
 Tank::Tank(String image_path, Position initPosition, Direction initDirection, int initLives, float initSpeed) :
 	image_path(image_path), position(initPosition), direction(initDirection), lives(initLives), speed(initSpeed), delta(Position(0, 0)) {
 	//Инициализация снаряда

@@ -24,10 +24,8 @@ private:
     unordered_map<WallType, Texture> textures;
 
 public:
-
     Map();
     
-    void loadFromFile(string filePath);
     int getWidth();
     int getHeight();
     Base& getPlayerBase();
@@ -35,6 +33,8 @@ public:
     Wall& getCell(int x, int y);
     unordered_map<WallType, Texture>& getMap();
     Texture& getCellTexture(int x, int y);
+
+    void loadFromFile(string filePath);
     void loadTextures();
     void draw(RenderWindow& window);
 };

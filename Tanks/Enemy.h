@@ -20,7 +20,6 @@ public:
 	void setArmor(int value);
 
 	void enemy_control(float time, Base& pBase);
-
 	void startRandomMovement();
 };
 

@@ -1,7 +1,5 @@
 #include "Bullet.h"
-Bullet::Bullet() : position(Position(0, 0)), direction(UP), speed(0.3), isActive(false), delta(Position(0, 0)) {
-
-}
+Bullet::Bullet() : position(Position(0, 0)), direction(UP), speed(0.3), isActive(false), delta(Position(0, 0)) {}
 
 Bullet::Bullet(Position initPosition, Direction initDirection, float initSpeed) :
 	position(initPosition), direction(initDirection), speed(initSpeed), isActive(false), delta(Position(0, 0)), isExploding(false), explosionTimer(0), currentExplosionFrame(0) {
@@ -57,11 +55,9 @@ void Bullet::updateExplosion(float time)
 }
 void Bullet::renderExplosion(RenderWindow& window)
 {
-	if (isExploding)
-	{
-		window.draw(explosionSprite);
-	}
+	if (isExploding) window.draw(explosionSprite);
 }
+
 void Bullet::move(float time) {
 	if (isActive && !checkBoarderCollision(position.getX(), position.getY(), direction, speed, time)) {
 		switch (direction)
@@ -116,7 +112,6 @@ bool Bullet::checkBoarderCollision(float currentX, float currentY, Direction cur
 	}
 	else return false;
 }
-
 
 Sprite Bullet::getSprite() { return sprite; }
 Sprite Bullet::getExpSprite() { return explosionSprite; }

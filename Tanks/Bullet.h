@@ -28,6 +28,7 @@ private:
 	Sprite sprite;
 	Texture explosionTexture;
 	Sprite explosionSprite;
+
 public:
 	Bullet();
 	Bullet(Position initPosition, Direction initDirection, float initSpeed);

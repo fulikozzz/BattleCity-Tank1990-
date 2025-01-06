@@ -5,12 +5,12 @@
 Player_Tank::Player_Tank(Position initPosition, Direction initDirection, int initLives, float initSpeed, int initArmor) :
 	Tank("textures/Player_tank_sprite.png", initPosition, initDirection, initLives, initSpeed), score(0), armor(initArmor) {
 	setShootSound("audio/shoot_standart.wav");
-	engineBuffer.loadFromFile("audio/engine_music.wav");
+	engineBuffer.loadFromFile("audio/move_music.wav");
 	engineSound.setBuffer(engineBuffer);
-	engineSound.setVolume(3);
-	idleBuffer.loadFromFile("audio/move_music.wav");
+	engineSound.setVolume(7);
+	idleBuffer.loadFromFile("audio/engine_music.wav");
 	idleSound.setBuffer(idleBuffer);
-	idleSound.setVolume(7);
+	idleSound.setVolume(5);
 }
 
 int Player_Tank::getScore() { return score; }
@@ -22,8 +22,6 @@ void Player_Tank::setArmor(int value) { armor = value; }
 
 void Player_Tank::control(float time) {
 	bool is_Moving = false;
-	
-	
 
 	if (Keyboard::isKeyPressed(Keyboard::W)) {
 		setDirection(UP);
@@ -45,12 +43,12 @@ void Player_Tank::control(float time) {
 		shoot(time);
 	}
 
-	
 	if (is_Moving) {
 		//setSpeed(0.1);
-
-		engineSound.play(); 
-
+		if (engineSound.getStatus() != sf::Sound::Playing) {
+			engineSound.play();
+		}
+		idleSound.stop();
 
 		switch (getDirection()) {
 		case UP:
@@ -69,9 +67,12 @@ void Player_Tank::control(float time) {
 			break;
 		}
 	}
+
 	else {
-		
+		engineSound.stop();  // Останавливаем звук двигателя
+		if (idleSound.getStatus() != sf::Sound::Playing) {
 			idleSound.play();
+		}
 		
 	}
 }

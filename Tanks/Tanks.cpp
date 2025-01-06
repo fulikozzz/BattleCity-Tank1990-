@@ -3,10 +3,8 @@
 #include "Main_menu.h"
 #include "Player_Tank.h"
 #include "Enemy.h"
-#include "Bullet.h"
-#include "Base.h"
+
 #include <algorithm>
-#include <iostream>
 #include <string>
 #include <string.h>
 #include <Windows.h>
@@ -14,7 +12,6 @@
 using namespace sf;
 
 static bool checkCollisionTank(Tank& tank, Map& map) {
-	// Размер клетки карты
 	const int cellSize = 54;
 
 	int tankTopLeftX = tank.getPosition().getX() / cellSize;
@@ -60,7 +57,6 @@ static bool checkCollisionTank(Tank& tank, Map& map) {
 static bool checkCollisionBullet(Bullet& bullet, Map& map) {
 	if (!bullet.getIsActive()) return false;
 
-	// Размер клетки карты
 	const int cellSize = 54;
 	const int bulletSize = 18;
 
@@ -117,7 +113,6 @@ static bool checkCollisionBullet(Bullet& bullet, Map& map) {
 }
 
 static bool checkCollision_BulletsWithEnemies(Bullet& player_bullet, vector<Enemy>& enemies){
-	// Размер клетки карты
 	const int cellSize = 54;
 	const int bulletSize = 18;
 
@@ -157,7 +152,6 @@ static bool checkCollision_BulletsWithEnemies(Bullet& player_bullet, vector<Enem
 }
 
 static bool checkCollision_BulletsWithPlayer(Bullet& enemy_bullet, Player_Tank& player) {
-	// Размер клетки карты
 	const int cellSize = 54;
 	const int bulletSize = 18;
 
@@ -193,7 +187,6 @@ static bool checkCollision_BulletsWithPlayer(Bullet& enemy_bullet, Player_Tank& 
 }
 
 static bool checkCollisionWithEnemies(Tank& playerTank, vector<Enemy>& enemies) {
-	// Размер клетки карты
 	const int cellSize = 54;
 
 	int tankTopLeftX = playerTank.getPosition().getX() / cellSize;
@@ -392,11 +385,12 @@ bool check_Winner(Player_Tank& player, vector<Enemy>& enemies, Map& map, int& le
 			map.loadFromFile("maps/map" + to_string(level) + ".txt");
 			player.setPosition(Position((map.getPlayerBase().getPositon().getX() - 2) * 54, (map.getPlayerBase().getPositon().getY()) * 54));
 			player.getSprite().setPosition((map.getPlayerBase().getPositon().getX() - 2) * 54, (map.getPlayerBase().getPositon().getY()) * 54);
+			player.setDirection(UP); 
 			player.setLives(player.getLives() + 1);
 			window.draw(player.getSprite());
 			window.display();
 			enemies.clear();
-			enemiesToSpawn = 1;//5 * level;
+			enemiesToSpawn = 5 * level;
 			enemySpawnClock.restart();
 			for (auto& bullet : player.getBullets()) {
 				bullet.setIsActive(false);
@@ -494,35 +488,35 @@ int main() {
 	RenderWindow window(VideoMode(1920, 1080), L"Tank1990", Style::Default);
 	window.setVerticalSyncEnabled(true);
 	Image icon;
+	// Загрузка иконки приложения
 	if (!icon.loadFromFile("textures/menu_tank_sprite.png")) {
 		cerr << "Failed to load icon!" << std::endl;
 		return -1;
 	}
 	window.setIcon(60, 60, icon.getPixelsPtr());
 
-	menu(window);
-
 	int current_level = 1;
 	Map map;
 	map.loadFromFile("maps/map" + to_string(current_level) + ".txt");
-
 	Player_Tank ptank(Position((map.getPlayerBase().getPositon().getX() - 2) * 54, (map.getPlayerBase().getPositon().getY()) * 54), UP, 3, 0, 1);
 	vector<Enemy> enemies;
 
 	Clock clock;
 	Clock enemySpawnClock;
+	float time;
 	const float spawnInterval = 3.0f;  // Интервал появления врагов в секундах
 	int enemiesToSpawn = 5 * current_level;
-
 	int score = 0;
 	int enemiesKilled = 0;
 	int enemiesRemains;
 
+	menu(window);
+
 	while (window.isOpen()) {
 		enemiesRemains = enemiesToSpawn + enemies.size();
-		if (Keyboard::isKeyPressed(Keyboard::Tilde)) ptank.setLives(20000);
-		if (Keyboard::isKeyPressed(Keyboard::F1)) enemies.clear();
-		float time = clock.getElapsedTime().asMicroseconds();
+		//if (Keyboard::isKeyPressed(Keyboard::Tilde)) ptank.setLives(20000);
+		//if (Keyboard::isKeyPressed(Keyboard::F1)) enemies.clear();
+		time = clock.getElapsedTime().asMicroseconds();
 		clock.restart();
 		time /= 800;
 
@@ -533,8 +527,9 @@ int main() {
 		}
 
 		window.clear(Color::Blue);
+		// Отрисовка карты
 		map.draw(window);
-
+		// Спавн противников
 		if (enemiesToSpawn > 0 && enemySpawnClock.getElapsedTime().asSeconds() >= spawnInterval) {
 			Position enemyBasePos = map.getEnemyBase().getPositon();
 			Position spawnPos;
@@ -542,27 +537,25 @@ int main() {
 				spawnPos = Position((enemyBasePos.getX() + 2) * 54, enemyBasePos.getY() * 54);
 			else
 				spawnPos = Position((enemyBasePos.getX() - 2) * 54, enemyBasePos.getY() * 54);
-			Enemy enemy = Enemy(spawnPos, DOWN, 1, 0, 1);
+			Enemy enemy = Enemy(spawnPos, DOWN, 1, 0, rand() % 4);
 			if (!checkCollisionTank(enemy, map)) {
 				enemies.push_back(enemy);
 				enemySpawnClock.restart();
 				enemiesToSpawn--;
 			}
 		}
-
+		// Движение игрока
 		if (!checkCollisionTank(ptank, map)) {
 			ptank.control(time);
 		}
-
-		checkCollisionWithEnemies(ptank, enemies);
-
+		// Коллизия с противниками
+		//checkCollisionWithEnemies(ptank, enemies);
+		// Движение противников
 		for (auto it = enemies.begin(); it != enemies.end(); ++it) {
-			if (checkCollisionTank((*it), map)) {
+			if (checkCollisionTank((*it), map) || it->checkBoarderCollision(it->getPosition().getX(), it->getPosition().getY(), it->getDirection(), it->getSpeed(), time)) {
 				it->startRandomMovement();
 			}
-			else {
-				it->enemy_control(time, map.getPlayerBase());
-			}
+			it->enemy_control(time, map.getPlayerBase());
 			for (auto& bullet : it->getBullets()) {
 				checkCollisionBullet(bullet, map);
 				bullet.updateExplosion(time);
@@ -574,15 +567,14 @@ int main() {
 				}
 			}
 			window.draw(it->getSprite());
-			cout << it->getPosition().getX() << " " << it->getPosition().getY() << endl;
 		}
-
+		// Анимация взрывов
 		for (auto& bullet : ptank.getBullets()) {
 			checkCollisionBullet(bullet, map);
 			bullet.updateExplosion(time);
 			bullet.renderExplosion(window);
 		}
-
+		// Стрельба игрока
 		for (auto& bullet : ptank.getBullets()) {
 			if (bullet.getIsActive() && !bullet.checkBoarderCollision(bullet.getPosition().getX(), bullet.getPosition().getY(), bullet.getDirection(), bullet.getSpeed(), time)) {
 				bullet.move(time);
@@ -594,11 +586,13 @@ int main() {
 				}
 			}
 		}
-
+		// Проверка победы
 		if(check_Winner(ptank, enemies, map, current_level, window, enemiesToSpawn, enemySpawnClock)) enemiesKilled = 0;
+		// Отрисовка панели статистики
 		drawRightPanel(window, ptank.getScore(), enemiesKilled, enemiesRemains, ptank.getLives(), ptank.getArmor(), map.getPlayerBase().getIsDestroyed(), current_level);
+		// Отрисовка игрока
 		window.draw(ptank.getSprite());
-
+		// Отрисовка текстур деревьев
 		for (int y = 0; y < 20; y++) {
 			for (int x = 0; x < 20; x++) {
 				Wall wall = map.getCell(y, x);
@@ -613,9 +607,8 @@ int main() {
 				}
 			}
 		}
-
+		
 		window.display();
-		std::cout << ptank.getScore() << std::endl;
 	}
 	return 0;
 }
